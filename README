@@ -1,0 +1,13 @@
+To run the app you need several things installed:
+
+Python 3
+the module pydub
+the program ffmpeg
+the module SpeechRecognition
+You can install the Python modules with pip.
+ffmpeg can be installed with your package manager (apt-get, emerge, yum, pacman)
+
+usage:
+open your terminal and type:
+
+python main.py [-h] [-o OUTPUT] [-l LANGUAGE] file

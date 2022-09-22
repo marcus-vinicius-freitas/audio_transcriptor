@@ -1,0 +1,4 @@
+API_KEY = "AIzaSyCEgV6ehPoH5BOeXZGY3MEo-hyP9uhpJ3k"
+AUDIO_WAVE_FILE = "audio.wav"
+SUB_CLIP_OUTPUT_FILE = "output.mp4"
+SUB_AUDIO_OUTPUT_FILE = "output.mp3"
