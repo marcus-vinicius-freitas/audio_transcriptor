@@ -37,9 +37,9 @@ if __name__ == '__main__':
                 video_edit.extract_audio(sub_clip_file_name, r"{0}_{1}".format(
                     file_index, config.SUB_AUDIO_OUTPUT_FILE))
                 print("transcribing file {0}".format(sub_clip_file_name))
-                file_index += 1
                 transcriptor.transcribe(r"{0}_{1}".format(file_index, config.SUB_AUDIO_OUTPUT_FILE), language,
                                         r"{0}_{1}".format(file_index, args.output))
+                file_index += 1
         else:
             print("extracting audio...")
             video_edit.extract_audio(config.SUB_CLIP_OUTPUT_FILE, config.SUB_AUDIO_OUTPUT_FILE)

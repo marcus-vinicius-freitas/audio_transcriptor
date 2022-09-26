@@ -68,6 +68,9 @@ instance/
 # Scrapy stuff:
 .scrapy
 
+# PyCharm stuff
+.idea/
+
 # Sphinx documentation
 docs/_build/
 
@@ -128,7 +131,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# media files
-*.mp3
-*.mp4
-*.wav
+# files
+/*.mp3
+/*.mp4
+/*.wav
+/*.txt
+/*.xml

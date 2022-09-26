@@ -22,7 +22,7 @@ class Transcriptor:
             text = r.recognize_google(audio, key=config.API_KEY, language=language, show_all=False)
             if output:
                 with open(output, 'w') as f:
-                    pprint(text, width=120, stream=f)
+                    f.write(text)
             else:
                 pprint(text, width=120)
         except sr.UnknownValueError:
