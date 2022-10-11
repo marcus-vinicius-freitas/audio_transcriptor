@@ -1,5 +1,8 @@
+import os.path
+
 import config
-from Result import Result
+from result import Result
+from google_cloud import GoogleCloud
 from google_storage import GoogleStorage
 from transcriptor import Transcriptor
 from media_manager import MediaManager
@@ -8,6 +11,10 @@ from media_manager import MediaManager
 class Recognizer:
 
     def send_data(self, file, language, output, engine, interval):
+        if not os.path.exists(file):
+            print("file not found...{}".format(file))
+            return
+
         send_data_to_recognizer(file, language, output, engine, interval)
 
 
@@ -73,11 +80,16 @@ def _google_cloud_recognizer(file, language, output):
         print("transcribing mp4 file...")
         video_edit = MediaManager()
         print("extracting audio...")
-        video_edit.extract_audio(file, config.SUB_AUDIO_OUTPUT_FILE_WAVE, codec="pcm_s16le")
+        video_edit.extract_audio(file, config.SUB_AUDIO_OUTPUT_FILE_WAVE, codec="pcm_s16le", mono=True)
         print("uploading audio file...")
         google_storage.upload_file(config.SUB_AUDIO_OUTPUT_FILE_WAVE)
-        file_uri = google_storage.get_file_uri(file)
+        file_uri = google_storage.get_file_uri(config.SUB_AUDIO_OUTPUT_FILE_WAVE)
         print("file uri...{}".format(file_uri))
-        google_storage.delete_file(file)
+        google_cloud = GoogleCloud(language)
+        print("transcribing...")
+        google_cloud.transcribe(file_uri, output)
+        print("delete file...")
+        google_storage.delete_file(config.SUB_AUDIO_OUTPUT_FILE_WAVE)
+        print("Done")
 
 

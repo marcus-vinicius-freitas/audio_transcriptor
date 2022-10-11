@@ -16,8 +16,7 @@ class GoogleStorage:
         print("file uploaded to google storage...{}".format(file_name))
 
     def get_file_uri(self, file_name):
-        blob = self.bucket.blob(file_name)
-        return blob.public_url
+        return "gs://{0}/{1}".format(self.bucket_name, file_name)
 
     def delete_file(self, file_name):
         blob = self.bucket.blob(file_name)

@@ -21,9 +21,14 @@ class MediaManager:
         else:
             return ffmpeg_extract_subclip(source, start, end, targetname=output)
 
-    def extract_audio(self, source, output, codec='mp3'):
+    def extract_audio(self, source, output, codec='mp3', mono=False):
         clip = mp.VideoFileClip(r"{}".format(source))
-        clip.audio.write_audiofile(r"{}".format(output), verbose=False, logger=None, codec=codec)
+        audio = clip.audio
+        ffmpeg_params = None
+        if mono:
+            ffmpeg_params = ['-ac', '1']
+        audio.write_audiofile(r"{}".format(output), verbose=False, logger=None, codec=codec,
+                              ffmpeg_params=ffmpeg_params)
 
     def clip_duration(self, video):
         return mp.VideoFileClip(r"{}".format(video)).duration
