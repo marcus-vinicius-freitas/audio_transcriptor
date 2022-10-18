@@ -1,4 +1,7 @@
+import os.path
 import sys
+from datetime import datetime
+from pprint import pprint
 
 from google.cloud import speech
 
@@ -20,39 +23,41 @@ class GoogleCloud:
     def transcribe(self, file_url, output):
         audio = speech.RecognitionAudio(uri=file_url)
         response = self.client.long_running_recognize(config=self.config, audio=audio)
+        diarization_output = "diarization_{}".format(output)
+        if os.path.exists(output):
+            os.remove(output)
         for result in response.result().results:
             transcript = result.alternatives[0].transcript
             if transcript:
-                with open(output, 'w') as f:
+                with open(output, 'a') as f:
                     f.write(transcript)
 
-        transcript = response.result().results[0].alternatives[0].transcript
         result = response.result().results[-1]
         words_info = result.alternatives[0].words
-        used_words_index = [0] * len(words_info)
+        with open("log_{}.txt".format(datetime.now().microsecond), "a") as log_file:
+            print("words_info: {}".format(words_info), file=log_file)
 
-        original_stdout = sys.stdout
         current_speaker = -1
+        original_stdout = sys.stdout
         words_per_line = 1
-        with open("diarization_{}".format(output), 'w') as f:
+        max_words_per_line = 30
+        if os.path.exists(diarization_output):
+            os.remove(diarization_output)
+        with open("diarization_{}".format(output), 'a') as f:
             sys.stdout = f
-            for word in transcript.split():
-                word_index = [i for i, j in enumerate(words_info) if j.word == word and used_words_index[i] == 0]
-                if len(word_index) > 0:
-                    used_words_index[word_index[0]] = 1
-                    _word = words_info[word_index[0]]
-                    if _word.speaker_tag != current_speaker:
-                        current_speaker = _word.speaker_tag
-                        print("\n")
-                        print("Speaker {}".format(current_speaker))
-                        print(_word.word, end=" ")
+            for word_info in words_info:
+                if word_info.speaker_tag != current_speaker:
+                    current_speaker = word_info.speaker_tag
+                    print("\n")
+                    print("Speaker {}".format(current_speaker))
+                    print(word_info.word, end=" ")
+                else:
+                    if words_per_line <= max_words_per_line:
+                        print(word_info.word, end=" ")
+                        words_per_line += 1
                     else:
-                        if words_per_line <= 20:
-                            print(_word.word, end=" ")
-                            words_per_line += 1
-                        else:
-                            print(_word.word)
-                            words_per_line = 1
+                        print(word_info.word)
+                        words_per_line = 1
             print("\n")
         sys.stdout = original_stdout
 

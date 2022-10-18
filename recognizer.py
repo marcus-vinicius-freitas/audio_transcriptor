@@ -30,7 +30,6 @@ def send_data_to_recognizer(file, language, output, engine, interval):
 
 
 def _google_recognizer(file, language, output, start, end, to_full_duration):
-    print("transcribing audio file...")
     transcriptor = Transcriptor()
     if file.endswith('.mp3'):
         print("transcribing mp3 file...")
@@ -67,7 +66,6 @@ def _google_recognizer(file, language, output, start, end, to_full_duration):
 
 
 def _google_cloud_recognizer(file, language, output):
-    print("transcribing audio file...")
     google_storage = GoogleStorage()
     if file.endswith('.mp3'):
         print("uploading mp3 file...")
